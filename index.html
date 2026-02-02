@@ -1128,6 +1128,7 @@
             localStorage.setItem('animalRunnerTotalCoins', totalCoins);
             totalCoinsDisplayElement.textContent = totalCoins;
             
+            if (score > highScore) {
                 highScore = score;
                 highScoreElement.textContent = highScore;
                 localStorage.setItem('animalRunnerHighScore', highScore);
