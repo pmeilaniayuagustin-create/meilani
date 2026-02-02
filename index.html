@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Animal Runner - Petualangan Seru!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 50%, #90EE90 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        /* HOME MENU */
+        .home-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .home-title {
+            font-size: 72px;
+            color: white;
+            font-weight: bold;
+            text-shadow: 4px 4px 8px rgba(0,0,0,0.4);
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .home-subtitle {
+            font-size: 24px;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 50px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .home-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .home-btn {
+            padding: 20px 60px;
+            font-size: 28px;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            text-transform: uppercase;
+        }
+
+        .btn-play {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-play:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        }
+
+        .btn-characters {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-characters:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        }
+
+        .current-character {
+            margin-top: 30px;
+            padding: 15px 30px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 15px;
+            color: white;
+            font-size: 18px;
+        }
+
+        .total-coins {
+            margin-top: 15px;
+            padding: 15px 30px;
+            background: rgba(255,215,0,0.3);
+            border-radius: 15px;
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        /* CHARACTER SELECT SCREEN */
+        .character-select {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+
+        .select-title {
+            color: white;
+            font-size: 48px;
+            margin-bottom: 40px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            text-align: center;
+        }
+
+        .characters {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .character-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 4px solid transparent;
+            text-align: center;
+            width: 250px;
+            position: relative;
+        }
+
+        .character-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            border-color: #f39c12;
+        }
+
+        .character-card.selected {
+            border-color: #27ae60;
+            box-shadow: 0 0 30px rgba(39, 174, 96, 0.6);
+            background: linear-gradient(135deg, #e8f5e9 0%, #ffffff 100%);
+        }
+
+        .character-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #27ae60;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .character-preview {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+        }
+
+        .character-name {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .character-stats {
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+
+        .back-button {
+            padding: 15px 50px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        }
+
+        /* GAME SCREEN */
+        .game-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .menu-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        .menu-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+
+        .game-container {
+            text-align: center;
+        }
+
+        #gameCanvas {
+            border: 3px solid #8B4513;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-radius: 10px;
+            background: #87CEEB;
+        }
+
+        .score {
+            font-size: 24px;
+            margin: 20px 0;
+            color: #2c3e50;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
+        }
+
+        .coin-display {
+            display: inline-block;
+            margin-left: 20px;
+            color: #FFD700;
+            font-size: 28px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .game-over {
+            display: none;
+            margin-top: 20px;
+            font-size: 32px;
+            color: #e74c3c;
+            font-weight: bold;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .instructions {
+            margin-top: 20px;
+            color: #34495e;
+            font-size: 16px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 950px) {
+            #gameCanvas {
+                width: 90%;
+                height: auto;
+            }
+            .home-title, .select-title {
+                font-size: 42px;
+            }
+            .characters {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .character-card {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HOME MENU -->
+    <div class="home-menu" id="homeMenu">
+        <div class="home-title">🎮 ANIMAL RUNNER 🎮</div>
+        <div class="home-subtitle">Pilih hewan favoritmu dan kumpulkan koin!</div>
+        <div class="home-buttons">
+            <button class="home-btn btn-play" id="btnPlay">▶ MAIN SEKARANG</button>
+            <button class="home-btn btn-characters" id="btnCharacters">🐾 PILIH KARAKTER</button>
+        </div>
+        <div class="current-character">
+            Karakter Saat Ini: <strong id="currentCharName">🐐 Kambing</strong>
+        </div>
+        <div class="total-coins">
+            🪙 Total Koin: <strong id="totalCoinsDisplay">0</strong>
+        </div>
+    </div>
+
+    <!-- CHARACTER SELECT SCREEN -->
+    <div class="character-select hidden" id="characterSelect">
+        <div class="select-title">🎮 Pilih Karaktermu! 🎮</div>
+        <div class="characters">
+            <div class="character-card selected" id="card-goat" data-character="goat">
+                <div class="character-preview">
+                    <canvas id="previewGoat" width="150" height="150"></canvas>
+                </div>
+                <div class="character-name">🐐 Kambing</div>
+                <div class="character-stats">Lompatan: ⭐⭐⭐⭐</div>
+            </div>
+            <div class="character-card" id="card-cow" data-character="cow">
+                <div class="character-preview">
+                    <canvas id="previewCow" width="150" height="150"></canvas>
+                </div>
+                <div class="character-name">🐄 Sapi</div>
+                <div class="character-stats">Lompatan: ⭐⭐⭐</div>
+            </div>
+            <div class="character-card" id="card-giraffe" data-character="giraffe">
+                <div class="character-preview">
+                    <canvas id="previewGiraffe" width="150" height="150"></canvas>
+                </div>
+                <div class="character-name">🦒 Jerapah</div>
+                <div class="character-stats">Lompatan: ⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="character-card" id="card-rabbit" data-character="rabbit">
+                <div class="character-preview">
+                    <canvas id="previewRabbit" width="150" height="150"></canvas>
+                </div>
+                <div class="character-name">🐰 Kelinci</div>
+                <div class="character-stats">Lompatan: ⭐⭐⭐⭐⭐⭐</div>
+            </div>
+        </div>
+        <button class="back-button" id="backButton">⬅ Kembali ke Menu</button>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div class="game-screen hidden" id="gameScreen">
+        <button class="menu-button" id="menuButton">🏠 Menu</button>
+        <div class="game-container">
+            <div class="score">
+                Skor: <span id="score">0</span> | High Score: <span id="highScore">0</span>
+                <span class="coin-display">🪙 <span id="coinCount">0</span></span>
+            </div>
+            <canvas id="gameCanvas" width="900" height="400"></canvas>
+            <div class="game-over" id="gameOver">
+                GAME OVER! 🎮<br>
+                <small style="font-size:20px">Koin yang dikumpulkan: <span id="gameOverCoins">0</span> 🪙</small><br>
+                <small style="font-size:18px">Tekan SPASI atau KLIK untuk main lagi</small>
+            </div>
+            <div class="instructions">⌨️ Tekan SPASI atau 🖱️ KLIK untuk melompat | 🪙 Kumpulkan koin!</div>
+        </div>
+    </div>
+
+    <script>
+        // Elements
+        const homeMenu = document.getElementById('homeMenu');
+        const characterSelect = document.getElementById('characterSelect');
+        const gameScreen = document.getElementById('gameScreen');
+        const menuButton = document.getElementById('menuButton');
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const highScoreElement = document.getElementById('highScore');
+        const gameOverElement = document.getElementById('gameOver');
+        const currentCharNameElement = document.getElementById('currentCharName');
+        const coinCountElement = document.getElementById('coinCount');
+        const gameOverCoinsElement = document.getElementById('gameOverCoins');
+        const totalCoinsDisplayElement = document.getElementById('totalCoinsDisplay');
+
+        // Game State
+        let score = 0;
+        let coins = 0;
+        let totalCoins = parseInt(localStorage.getItem('animalRunnerTotalCoins')) || 0;
+        let highScore = localStorage.getItem('animalRunnerHighScore') || 0;
+        highScoreElement.textContent = highScore;
+        totalCoinsDisplayElement.textContent = totalCoins;
+        let gameSpeed = 6;
+        let gravity = 0.8;
+        let isGameOver = false;
+        let frameCount = 0;
+        let selectedCharacter = localStorage.getItem('selectedCharacter') || 'goat';
+        let gameStarted = false;
+
+        // Character Configurations
+        const characters = {
+            goat: {
+                name: 'Kambing',
+                emoji: '🐐',
+                jumpPower: -14,
+                color: '#F5F5DC',
+                accentColor: '#8B7355',
+                hornColor: '#696969',
+                size: { width: 50, height: 45 }
+            },
+            cow: {
+                name: 'Sapi',
+                emoji: '🐄',
+                jumpPower: -13,
+                color: '#FFFFFF',
+                accentColor: '#000000',
+                spotColor: '#8B4513',
+                size: { width: 60, height: 50 }
+            },
+            giraffe: {
+                name: 'Jerapah',
+                emoji: '🦒',
+                jumpPower: -16,
+                color: '#DAA520',
+                accentColor: '#8B4513',
+                spotColor: '#654321',
+                size: { width: 45, height: 80 }
+            },
+            rabbit: {
+                name: 'Kelinci',
+                emoji: '🐰',
+                jumpPower: -17,
+                color: '#FFE4E1',
+                accentColor: '#FFC0CB',
+                earColor: '#FFB6C1',
+                size: { width: 40, height: 35 }
+            }
+        };
+
+        // Draw Character Previews
+        function drawCharacterPreview(type, canvasId) {
+            const previewCanvas = document.getElementById(canvasId);
+            if (!previewCanvas) return;
+            const previewCtx = previewCanvas.getContext('2d');
+            const char = characters[type];
+            
+            previewCtx.clearRect(0, 0, 150, 150);
+            
+            const scale = 1.5;
+            const offsetX = 75;
+            const offsetY = 100;
+            
+            if (type === 'goat') {
+                previewCtx.fillStyle = char.color;
+                previewCtx.fillRect(offsetX - 25*scale, offsetY - 20*scale, 35*scale, 25*scale);
+                previewCtx.fillRect(offsetX + 5*scale, offsetY - 30*scale, 20*scale, 15*scale);
+                previewCtx.fillStyle = char.hornColor;
+                previewCtx.fillRect(offsetX + 6*scale, offsetY - 35*scale, 4*scale, 8*scale);
+                previewCtx.fillRect(offsetX + 18*scale, offsetY - 35*scale, 4*scale, 8*scale);
+                previewCtx.fillStyle = char.accentColor;
+                previewCtx.fillRect(offsetX - 20*scale, offsetY - 5*scale, 6*scale, 15*scale);
+                previewCtx.fillRect(offsetX - 5*scale, offsetY - 5*scale, 6*scale, 15*scale);
+                previewCtx.fillRect(offsetX + 5*scale, offsetY - 5*scale, 6*scale, 15*scale);
+                previewCtx.fillStyle = '#000';
+                previewCtx.fillRect(offsetX + 18*scale, offsetY - 26*scale, 3*scale, 3*scale);
+            } else if (type === 'cow') {
+                previewCtx.fillStyle = char.color;
+                previewCtx.fillRect(offsetX - 30*scale, offsetY - 25*scale, 40*scale, 30*scale);
+                previewCtx.fillStyle = char.accentColor;
+                previewCtx.fillRect(offsetX - 25*scale, offsetY - 20*scale, 12*scale, 10*scale);
+                previewCtx.fillRect(offsetX - 5*scale, offsetY - 15*scale, 10*scale, 8*scale);
+                previewCtx.fillStyle = char.color;
+                previewCtx.fillRect(offsetX + 5*scale, offsetY - 35*scale, 25*scale, 20*scale);
+                previewCtx.fillStyle = char.accentColor;
+                previewCtx.fillRect(offsetX + 5*scale, offsetY - 40*scale, 8*scale, 8*scale);
+                previewCtx.fillRect(offsetX + 22*scale, offsetY - 40*scale, 8*scale, 8*scale);
+                previewCtx.fillStyle = char.color;
+                previewCtx.fillRect(offsetX - 25*scale, offsetY + 5*scale, 7*scale, 15*scale);
+                previewCtx.fillRect(offsetX - 10*scale, offsetY + 5*scale, 7*scale, 15*scale);
+                previewCtx.fillRect(offsetX + 5*scale, offsetY + 5*scale, 7*scale, 15*scale);
+                previewCtx.fillStyle = '#000';
+                previewCtx.fillRect(offsetX + 20*scale, offsetY - 28*scale, 4*scale, 4*scale);
+            } else if (type === 'giraffe') {
+                previewCtx.fillStyle = char.color;
+                previewCtx.fillRect(offsetX - 22*scale, offsetY - 25*scale, 30*scale, 25*scale);
+                previewCtx.fillStyle = char.spotColor;
+                previewCtx.fillRect(offsetX - 18*scale, offsetY - 20*scale, 8*scale, 8*scale);
+                previewCtx.fillRect(offsetX - 5*scale, offsetY - 15*scale, 8*scale, 8*scale);
+                previewCtx.fillRect(offsetX - 15*scale, offsetY - 8*scale, 8*scale, 8*scale);
+                previewCtx.fillStyle = char.color;
+                previewCtx.fillRect(offsetX + 3*scale, offsetY - 55*scale, 12*scale, 35*scale);
+                previewCtx.fillStyle = char.spotColor;
+                previewCtx.fillRect(offsetX + 5*scale, offsetY - 50*scale, 8*scale, 8*scale);
+                previewCtx.fillRect(offsetX + 6*scale, offsetY - 38*scale, 7*scale, 7*scale);
+                previewCtx.fillStyle = char.color;
+                previewCtx.fillRect(offsetX + 0*scale, offsetY - 65*scale, 18*scale, 15*scale);
+                previewCtx.fillStyle = char.accentColor;
+                previewCtx.fillRect(offsetX + 2*scale, offsetY - 70*scale, 4*scale, 7*scale);
+                previewCtx.fillRect(offsetX + 12*scale, offsetY - 70*scale, 4*scale, 7*scale);
+                previewCtx.fillRect(offsetX - 18*scale, offsetY, 6*scale, 20*scale);
+                previewCtx.fillRect(offsetX - 3*scale, offsetY, 6*scale, 20*scale);
+                previewCtx.fillStyle = '#000';
+                previewCtx.fillRect(offsetX + 10*scale, offsetY - 60*scale, 3*scale, 3*scale);
+            } else if (type === 'rabbit') {
+                previewCtx.fillStyle = char.color;
+                previewCtx.fillRect(offsetX - 20*scale, offsetY - 18*scale, 28*scale, 22*scale);
+                previewCtx.fillRect(offsetX + 3*scale, offsetY - 28*scale, 18*scale, 15*scale);
+                previewCtx.fillStyle = char.earColor;
+                previewCtx.fillRect(offsetX + 5*scale, offsetY - 45*scale, 6*scale, 20*scale);
+                previewCtx.fillRect(offsetX + 14*scale, offsetY - 45*scale, 6*scale, 20*scale);
+                previewCtx.fillStyle = char.accentColor;
+                previewCtx.fillRect(offsetX + 7*scale, offsetY - 42*scale, 3*scale, 12*scale);
+                previewCtx.fillRect(offsetX + 16*scale, offsetY - 42*scale, 3*scale, 12*scale);
+                previewCtx.fillStyle = char.color;
+                previewCtx.fillRect(offsetX - 15*scale, offsetY + 4*scale, 8*scale, 10*scale);
+                previewCtx.fillRect(offsetX + 0*scale, offsetY + 4*scale, 8*scale, 10*scale);
+                previewCtx.beginPath();
+                previewCtx.arc(offsetX - 22*scale, offsetY - 10*scale, 5*scale, 0, Math.PI * 2);
+                previewCtx.fill();
+                previewCtx.fillStyle = '#000';
+                previewCtx.fillRect(offsetX + 14*scale, offsetY - 24*scale, 3*scale, 3*scale);
+                previewCtx.fillStyle = '#FFB6C1';
+                previewCtx.fillRect(offsetX + 18*scale, offsetY - 18*scale, 3*scale, 2*scale);
+            }
+        }
+
+        // Initialize previews
+        drawCharacterPreview('goat', 'previewGoat');
+        drawCharacterPreview('cow', 'previewCow');
+        drawCharacterPreview('giraffe', 'previewGiraffe');
+        drawCharacterPreview('rabbit', 'previewRabbit');
+
+        // Update UI Functions
+        function updateCurrentCharacterDisplay() {
+            const char = characters[selectedCharacter];
+            currentCharNameElement.textContent = `${char.emoji} ${char.name}`;
+        }
+
+        function updateSelectedCard() {
+            document.querySelectorAll('.character-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            const selectedCard = document.getElementById('card-' + selectedCharacter);
+            if (selectedCard) selectedCard.classList.add('selected');
+        }
+
+        updateCurrentCharacterDisplay();
+        updateSelectedCard();
+
+        // Navigation Functions
+        function showHomeMenu() {
+            homeMenu.classList.remove('hidden');
+            characterSelect.classList.add('hidden');
+            gameScreen.classList.add('hidden');
+            gameStarted = false;
+            isGameOver = true;
+        }
+
+        function showCharacterSelect() {
+            homeMenu.classList.add('hidden');
+            characterSelect.classList.remove('hidden');
+            gameScreen.classList.add('hidden');
+        }
+
+        function showGameScreen() {
+            homeMenu.classList.add('hidden');
+            characterSelect.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            gameStarted = true;
+            resetGame();
+        }
+
+        // Event Listeners - Navigation
+        document.getElementById('btnPlay').addEventListener('click', showGameScreen);
+        document.getElementById('btnCharacters').addEventListener('click', showCharacterSelect);
+        document.getElementById('backButton').addEventListener('click', showHomeMenu);
+        document.getElementById('menuButton').addEventListener('click', showHomeMenu);
+
+        // Event Listeners - Character Selection
+        document.querySelectorAll('.character-card').forEach(card => {
+            card.addEventListener('click', function() {
+                selectedCharacter = this.dataset.character;
+                localStorage.setItem('selectedCharacter', selectedCharacter);
+                updateCurrentCharacterDisplay();
+                updateSelectedCard();
+            });
+        });
+
+        // Animal Player
+        const animal = {
+            x: 80,
+            y: 300,
+            width: 50,
+            height: 50,
+            dy: 0,
+            jumpPower: -14,
+            isJumping: false,
+            
+            draw() {
+                if (!selectedCharacter) return;
+                
+                const char = characters[selectedCharacter];
+                this.width = char.size.width;
+                this.height = char.size.height;
+                this.jumpPower = char.jumpPower;
+                
+                const legAnimation = Math.floor(frameCount / 10) % 2;
+                
+                ctx.save();
+                
+                if (selectedCharacter === 'goat') {
+                    ctx.fillStyle = char.color;
+                    ctx.fillRect(this.x, this.y, 35, 25);
+                    ctx.fillRect(this.x + 30, this.y - 10, 20, 15);
+                    ctx.fillStyle = char.hornColor;
+                    ctx.fillRect(this.x + 31, this.y - 15, 4, 8);
+                    ctx.fillRect(this.x + 43, this.y - 15, 4, 8);
+                    ctx.fillStyle = char.accentColor;
+                    if (!this.isJumping) {
+                        ctx.fillRect(this.x + 5, this.y + 25, 6, 15);
+                        ctx.fillRect(this.x + 20, this.y + 25, 6, 15);
+                        ctx.fillRect(this.x + 30 + legAnimation * 3, this.y + 25, 6, 15);
+                    } else {
+                        ctx.fillRect(this.x + 5, this.y + 25, 6, 12);
+                        ctx.fillRect(this.x + 20, this.y + 25, 6, 12);
+                        ctx.fillRect(this.x + 30, this.y + 25, 6, 12);
+                    }
+                    ctx.fillStyle = '#000';
+                    ctx.fillRect(this.x + 43, this.y - 6, 3, 3);
+                } else if (selectedCharacter === 'cow') {
+                    ctx.fillStyle = char.color;
+                    ctx.fillRect(this.x, this.y, 40, 30);
+                    ctx.fillStyle = char.accentColor;
+                    ctx.fillRect(this.x + 5, this.y + 5, 12, 10);
+                    ctx.fillRect(this.x + 25, this.y + 10, 10, 8);
+                    ctx.fillStyle = char.color;
+                    ctx.fillRect(this.x + 35, this.y - 10, 25, 20);
+                    ctx.fillStyle = char.accentColor;
+                    ctx.fillRect(this.x + 35, this.y - 15, 8, 8);
+                    ctx.fillRect(this.x + 52, this.y - 15, 8, 8);
+                    ctx.fillStyle = char.color;
+                    if (!this.isJumping) {
+                        ctx.fillRect(this.x + 5, this.y + 30, 7, 15);
+                        ctx.fillRect(this.x + 20, this.y + 30, 7, 15);
+                        ctx.fillRect(this.x + 30 + legAnimation * 3, this.y + 30, 7, 15);
+                    } else {
+                        ctx.fillRect(this.x + 5, this.y + 30, 7, 12);
+                        ctx.fillRect(this.x + 20, this.y + 30, 7, 12);
+                        ctx.fillRect(this.x + 30, this.y + 30, 7, 12);
+                    }
+                    ctx.fillStyle = '#000';
+                    ctx.fillRect(this.x + 50, this.y - 4, 4, 4);
+                } else if (selectedCharacter === 'giraffe') {
+                    ctx.fillStyle = char.color;
+                    ctx.fillRect(this.x, this.y + 30, 30, 25);
+                    ctx.fillStyle = char.spotColor;
+                    ctx.fillRect(this.x + 4, this.y + 35, 8, 8);
+                    ctx.fillRect(this.x + 17, this.y + 40, 8, 8);
+                    ctx.fillRect(this.x + 7, this.y + 47, 8, 8);
+                    ctx.fillStyle = char.color;
+                    ctx.fillRect(this.x + 23, this.y, 12, 35);
+                    ctx.fillStyle = char.spotColor;
+                    ctx.fillRect(this.x + 25, this.y + 5, 8, 8);
+                    ctx.fillRect(this.x + 26, this.y + 17, 7, 7);
+                    ctx.fillStyle = char.color;
+                    ctx.fillRect(this.x + 20, this.y - 15, 18, 15);
+                    ctx.fillStyle = char.accentColor;
+                    ctx.fillRect(this.x + 22, this.y - 20, 4, 7);
+                    ctx.fillRect(this.x + 32, this.y - 20, 4, 7);
+                    if (!this.isJumping) {
+                        ctx.fillRect(this.x + 4, this.y + 55, 6, 25);
+                        ctx.fillRect(this.x + 17, this.y + 55, 6, 25);
+                        ctx.fillRect(this.x + 25 + legAnimation * 2, this.y + 55, 6, 25);
+                    } else {
+                        ctx.fillRect(this.x + 4, this.y + 55, 6, 20);
+                        ctx.fillRect(this.x + 17, this.y + 55, 6, 20);
+                        ctx.fillRect(this.x + 25, this.y + 55, 6, 20);
+                    }
+                    ctx.fillStyle = '#000';
+                    ctx.fillRect(this.x + 30, this.y - 10, 3, 3);
+                } else if (selectedCharacter === 'rabbit') {
+                    ctx.fillStyle = char.color;
+                    ctx.fillRect(this.x, this.y + 20, 28, 22);
+                    ctx.fillRect(this.x + 23, this.y + 10, 18, 15);
+                    ctx.fillStyle = char.earColor;
+                    ctx.fillRect(this.x + 25, this.y - 10, 6, 20);
+                    ctx.fillRect(this.x + 34, this.y - 10, 6, 20);
+                    ctx.fillStyle = char.accentColor;
+                    ctx.fillRect(this.x + 27, this.y - 7, 3, 12);
+                    ctx.fillRect(this.x + 36, this.y - 7, 3, 12);
+                    ctx.fillStyle = char.color;
+                    if (!this.isJumping) {
+                        ctx.fillRect(this.x + 5, this.y + 42, 8, 10);
+                        ctx.fillRect(this.x + 18 + legAnimation * 3, this.y + 42, 8, 10);
+                    } else {
+                        ctx.fillRect(this.x + 5, this.y + 42, 8, 8);
+                        ctx.fillRect(this.x + 18, this.y + 42, 8, 8);
+                    }
+                    ctx.beginPath();
+                    ctx.arc(this.x - 2, this.y + 28, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#000';
+                    ctx.fillRect(this.x + 34, this.y + 14, 3, 3);
+                }
+                
+                ctx.restore();
+            },
+            
+            jump() {
+                if (!this.isJumping) {
+                    this.dy = this.jumpPower;
+                    this.isJumping = true;
+                }
+            },
+            
+            update() {
+                this.dy += gravity;
+                this.y += this.dy;
+                
+                const groundY = selectedCharacter === 'giraffe' ? 270 : 300;
+                if (this.y > groundY) {
+                    this.y = groundY;
+                    this.dy = 0;
+                    this.isJumping = false;
+                }
+            }
+        };
+
+        // Obstacles
+        let obstacles = [];
+        let obstacleTimer = 0;
+
+        class Obstacle {
+            constructor() {
+                this.x = canvas.width;
+                this.speed = gameSpeed;
+                
+                const types = ['cactus', 'rock', 'tree', 'bush'];
+                this.type = types[Math.floor(Math.random() * types.length)];
+                
+                if (this.type === 'cactus') {
+                    this.width = 40;
+                    this.height = 70;
+                    this.y = 330;
+                } else if (this.type === 'rock') {
+                    this.width = 50;
+                    this.height = 60;
+                    this.y = 340;
+                } else if (this.type === 'tree') {
+                    this.width = 45;
+                    this.height = 90;
+                    this.y = 310;
+                } else {
+                    this.width = 55;
+                    this.height = 50;
+                    this.y = 350;
+                }
+                this.scored = false;
+            }
+            
+            draw() {
+                ctx.save();
+                
+                if (this.type === 'cactus') {
+                    ctx.fillStyle = '#2d5016';
+                    ctx.fillRect(this.x + 12, this.y, 18, this.height);
+                    ctx.fillRect(this.x, this.y + 20, 12, 30);
+                    ctx.fillRect(this.x + 30, this.y + 30, 12, 25);
+                } else if (this.type === 'rock') {
+                    ctx.fillStyle = '#696969';
+                    ctx.beginPath();
+                    ctx.moveTo(this.x + 25, this.y);
+                    ctx.lineTo(this.x + 50, this.y + 30);
+                    ctx.lineTo(this.x + 45, this.y + 60);
+                    ctx.lineTo(this.x + 5, this.y + 60);
+                    ctx.lineTo(this.x, this.y + 35);
+                    ctx.closePath();
+                    ctx.fill();
+                } else if (this.type === 'tree') {
+                    ctx.fillStyle = '#654321';
+                    ctx.fillRect(this.x + 10, this.y + 35, 25, 55);
+                    ctx.fillStyle = '#228B22';
+                    ctx.beginPath();
+                    ctx.arc(this.x + 22, this.y + 15, 22, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    ctx.fillStyle = '#228B22';
+                    ctx.beginPath();
+                    ctx.arc(this.x + 27, this.y + 30, 25, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                ctx.restore();
+            }
+            
+            update() {
+                this.x -= this.speed;
+            }
+        }
+
+        // Coins
+        let coinItems = [];
+        let coinTimer = 0;
+
+        class Coin {
+            constructor() {
+                this.x = canvas.width;
+                this.y = Math.random() * 150 + 100;
+                this.radius = 12;
+                this.speed = gameSpeed;
+                this.collected = false;
+                this.rotation = 0;
+                this.floatOffset = Math.random() * Math.PI * 2;
+            }
+            
+            draw() {
+                if (this.collected) return;
+                
+                const float = Math.sin(frameCount * 0.1 + this.floatOffset) * 3;
+                const currentY = this.y + float;
+                
+                this.rotation += 0.1;
+                
+                ctx.save();
+                ctx.translate(this.x, currentY);
+                ctx.rotate(this.rotation);
+                
+                const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.radius);
+                gradient.addColorStop(0, '#FFD700');
+                gradient.addColorStop(0.5, '#FFA500');
+                gradient.addColorStop(1, '#FF8C00');
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.strokeStyle = '#B8860B';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                ctx.fillStyle = '#B8860B';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('$', 0, 0);
+                
+                ctx.restore();
+            }
+            
+            update() {
+                this.x -= this.speed;
+            }
+            
+            checkCollection(animal) {
+                if (this.collected) return false;
+                
+                const dx = this.x - (animal.x + animal.width / 2);
+                const dy = this.y - (animal.y + animal.height / 2);
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < this.radius + 20) {
+                    this.collected = true;
+                    coins++;
+                    coinCountElement.textContent = coins;
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        // Clouds
+        let clouds = [];
+        
+        class Cloud {
+            constructor() {
+                this.x = canvas.width;
+                this.y = Math.random() * 100 + 30;
+                this.speed = 1 + Math.random();
+            }
+            
+            draw() {
+                ctx.fillStyle = '#FFFFFF';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 15, 0, Math.PI * 2);
+                ctx.arc(this.x + 20, this.y - 5, 20, 0, Math.PI * 2);
+                ctx.arc(this.x + 40, this.y, 18, 0, Math.PI * 2);
+                ctx.arc(this.x + 60, this.y + 5, 15, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            update() {
+                this.x -= this.speed;
+            }
+        }
+
+        // Sun
+        const sun = {
+            x: 800,
+            y: 60,
+            radius: 40,
+            
+            draw() {
+                const gradient = ctx.createRadialGradient(this.x, this.y, 10, this.x, this.y, this.radius + 20);
+                gradient.addColorStop(0, 'rgba(255, 220, 0, 0.8)');
+                gradient.addColorStop(0.5, 'rgba(255, 200, 0, 0.4)');
+                gradient.addColorStop(1, 'rgba(255, 200, 0, 0)');
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius + 20, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#FFD700';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        };
+
+        // Background Trees
+        let trees = [];
+        
+        class Tree {
+            constructor(x) {
+                this.x = x || canvas.width;
+                this.y = 320;
+                this.speed = 2;
+            }
+            
+            draw() {
+                ctx.fillStyle = '#8B4513';
+                ctx.fillRect(this.x, this.y, 20, 80);
+                ctx.fillStyle = '#228B22';
+                ctx.beginPath();
+                ctx.arc(this.x + 10, this.y - 10, 35, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            update() {
+                this.x -= this.speed;
+            }
+        }
+
+        for (let i = 0; i < 3; i++) {
+            trees.push(new Tree(200 + i * 300));
+        }
+
+        // Collision Detection
+        function checkCollision(animal, obstacle) {
+            const padding = 8;
+            return animal.x + padding < obstacle.x + obstacle.width - padding &&
+                   animal.x + animal.width - padding > obstacle.x + padding &&
+                   animal.y + padding < obstacle.y + obstacle.height - padding &&
+                   animal.y + animal.height - padding > obstacle.y + padding;
+        }
+
+        // Input Handling
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (!gameStarted) return;
+                if (isGameOver) {
+                    resetGame();
+                } else {
+                    animal.jump();
+                }
+            }
+        });
+
+        canvas.addEventListener('click', () => {
+            if (!gameStarted) return;
+            if (isGameOver) {
+                resetGame();
+            } else {
+                animal.jump();
+            }
+        });
+
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (!gameStarted) return;
+            if (isGameOver) {
+                resetGame();
+            } else {
+                animal.jump();
+            }
+        });
+
+        // Draw Ground
+        function drawGround() {
+            ctx.fillStyle = '#90EE90';
+            ctx.fillRect(0, 340, canvas.width, 60);
+            ctx.fillStyle = '#7CCD7C';
+            for (let i = 0; i < canvas.width; i += 30) {
+                const offset = (frameCount + i) % 30;
+                ctx.fillRect(i + offset, 340, 3, 8);
+                ctx.fillRect(i + offset + 10, 342, 3, 6);
+                ctx.fillRect(i + offset + 20, 341, 3, 7);
+            }
+            ctx.fillStyle = '#8B7355';
+            ctx.fillRect(0, 398, canvas.width, 2);
+        }
+
+        // Game Loop
+        function gameLoop() {
+            if (isGameOver || !gameStarted) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            skyGradient.addColorStop(0, '#87CEEB');
+            skyGradient.addColorStop(0.4, '#E0F6FF');
+            skyGradient.addColorStop(0.7, '#DEB887');
+            skyGradient.addColorStop(1, '#90EE90');
+            ctx.fillStyle = skyGradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            sun.draw();
+
+            if (Math.random() < 0.01) clouds.push(new Cloud());
+            clouds = clouds.filter(cloud => cloud.x > -80);
+            clouds.forEach(cloud => {
+                cloud.update();
+                cloud.draw();
+            });
+
+            if (Math.random() < 0.005) trees.push(new Tree());
+            trees = trees.filter(tree => tree.x > -50);
+            trees.forEach(tree => {
+                tree.update();
+                tree.draw();
+            });
+
+            drawGround();
+
+            coinTimer++;
+            if (coinTimer > 80) {
+                coinItems.push(new Coin());
+                coinTimer = Math.floor(Math.random() * 40);
+            }
+
+            coinItems = coinItems.filter(coin => coin.x > -30 && !coin.collected);
+            coinItems.forEach(coin => {
+                coin.update();
+                coin.draw();
+                coin.checkCollection(animal);
+            });
+
+            animal.update();
+            animal.draw();
+
+            obstacleTimer++;
+            if (obstacleTimer > 120 - Math.min(score * 2, 60)) {
+                obstacles.push(new Obstacle());
+                obstacleTimer = Math.floor(Math.random() * 40);
+            }
+
+            obstacles = obstacles.filter(obstacle => obstacle.x > -obstacle.width);
+            obstacles.forEach(obstacle => {
+                obstacle.update();
+                obstacle.draw();
+
+                if (checkCollision(animal, obstacle)) {
+                    gameOver();
+                }
+
+                if (obstacle.x + obstacle.width < animal.x && !obstacle.scored) {
+                    score++;
+                    scoreElement.textContent = score;
+                    obstacle.scored = true;
+                    
+                    if (score % 5 === 0) {
+                        gameSpeed += 0.3;
+                        obstacles.forEach(obs => obs.speed = gameSpeed);
+                        coinItems.forEach(coin => coin.speed = gameSpeed);
+                    }
+                }
+            });
+
+            frameCount++;
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Game Over
+        function gameOver() {
+            isGameOver = true;
+            gameOverElement.style.display = 'block';
+            gameOverCoinsElement.textContent = coins;
+            
+            totalCoins += coins;
+            localStorage.setItem('animalRunnerTotalCoins', totalCoins);
+            totalCoinsDisplayElement.textContent = totalCoins;
+            
+                highScore = score;
+                highScoreElement.textContent = highScore;
+                localStorage.setItem('animalRunnerHighScore', highScore);
+            }
+        }
+
+        // Reset Game
+        function resetGame() {
+            isGameOver = false;
+            score = 0;
+            coins = 0;
+            coinCountElement.textContent = coins;
+            gameSpeed = 6;
+            obstacles = [];
+            coinItems = [];
+            clouds = [];
+            trees = [];
+            for (let i = 0; i < 3; i++) {
+                trees.push(new Tree(200 + i * 300));
+            }
+            obstacleTimer = 0;
+            coinTimer = 0;
+            frameCount = 0;
+            animal.y = selectedCharacter === 'giraffe' ? 270 : 300;
+            animal.dy = 0;
+            animal.isJumping = false;
+            scoreElement.textContent = score;
+            gameOverElement.style.display = 'none';
+            gameLoop();
+        }
+    </script>
+</body>
+</html>
